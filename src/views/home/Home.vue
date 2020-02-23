@@ -13,7 +13,7 @@
       v-show="isTabFixed"
     />
     <scroll
-      class="content"
+      class="content"   
       ref="scroll"
       :probe-type="3"
       :pull-up-load="true"
@@ -49,6 +49,7 @@ import FeatureView from "./childComps/FeatureView";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 import { debounce } from "common/utils";
+import {itemListenerMixin} from 'common/mixin';
 
 export default {
   name: "Home",
@@ -62,6 +63,7 @@ export default {
     RecommendView,
     FeatureView
   },
+  mixins: [itemListenerMixin],        // 混入 mounted 中的对象
   data() {
     return {
       banners: [],
@@ -75,7 +77,7 @@ export default {
       isShowBackTop: false,
       tabOffSetTop: 0,
       isTabFixed: false,
-      saveY: 0     // 保存离开 home 页面时滚动到的 垂直位置
+      saveY: 0,
     };
   },
   created() {
@@ -89,24 +91,31 @@ export default {
   },
 
   mounted() {
-    // 1. 监听item中图片加载完成
-    // 调用防抖函数，返回一个函数 并赋值给 refresh
-    const refresh = debounce(this.$refs.scroll.refresh, 50);
-    this.$bus.$on("itemImageLoad", () => {
-      refresh(); // 调用 上面的防抖后的 重新刷新 函数
-    });
+    // 1. 监听item中图片加载完成后 滚动效果重新刷新
+    // 调用防抖函数，返回一个函数 并赋值给 newRefresh
+
+    // const newRefresh = debounce(this.$refs.scroll.refresh, 100);
+    // this.itemImgListener = () => { newRefresh() }       // 用 itemImgListener 保存 重刷新函数，在离开home页时取消掉
+    // this.$bus.$on("itemImgLoad", this.itemImgListener);
+
+    // this.$bus.$on("itemImageLoad", () => {
+    //   newRefresh() }
   },
   computed: {
     showGoods() {
       return this.goods[this.currentType].list;
     }
   },
+  // 有keep-alive 中 才会有 activated, deactivated 函数
   activated() {
     this.$refs.scroll.scrollTo(0, this.saveY, 0)    // 每次回到 home 页面时 都会滚动到离开时的位置，相当于保持位置
     this.$refs.scroll.refresh()   // 让滚动效果重新刷新
   },
   deactivated() {
-    this.saveY = this.$refs.scroll.getScrollY()     // 离开 home 时 保存滚动位置
+    // 1. 离开 home 时 保存滚动位置
+    this.saveY = this.$refs.scroll.getScrollY()  
+    // 2. 取消全局事件的监听 (这里取消 在 home 页面的重刷新 函数)
+    this.$bus.$off('itemImgLoad', this.itemImgListener)
   },
   methods: {
     // 监听点击 TabControl 事件方法 获取当前的类型
@@ -187,7 +196,7 @@ export default {
   z-index: 9; */
 }
 
-/* 设置局部滚动的 区域 */
+/* 设置局部滚动的 固定高度 */
 .content {
   overflow: hidden;
   position: absolute;
