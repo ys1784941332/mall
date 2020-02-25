@@ -3,7 +3,7 @@
     <nav-bar class="home-nav">
       <div slot="center">购物车</div>
     </nav-bar>
-    <!-- 新加一个 tab-control , 监听滚动位置 再显示，两个再重叠 -->
+    <!-- 新加一个 tab-control , 监听滚动位置 再显示 -->
     <tab-control
       :titles="['流行','新款','精选']"
       @itemClick="itemClick"
@@ -41,7 +41,7 @@ import NavBar from "components/common/navbar/NavBar";
 import Scroll from "components/common/scroll/Scroll";
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
-import BackTop from "components/content/backTop/BackTop";
+
 
 import HomeSwiper from "./childComps/HomeSwiper";
 import RecommendView from "./childComps/RecommendView";
@@ -49,7 +49,7 @@ import FeatureView from "./childComps/FeatureView";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 import { debounce } from "common/utils";
-import {itemListenerMixin} from 'common/mixin';
+import {itemListenerMixin, backTopMixin} from 'common/mixin';
 
 export default {
   name: "Home",
@@ -58,12 +58,11 @@ export default {
     Scroll,
     TabControl,
     GoodsList,
-    BackTop,
     HomeSwiper,
     RecommendView,
     FeatureView
   },
-  mixins: [itemListenerMixin],        // 混入 mounted 中的对象
+  mixins: [itemListenerMixin, backTopMixin],        // 混入 mounted 中的对象
   data() {
     return {
       banners: [],
@@ -74,7 +73,6 @@ export default {
         sell: { page: 0, list: [] }
       },
       currentType: "pop",
-      isShowBackTop: false,
       tabOffSetTop: 0,
       isTabFixed: false,
       saveY: 0,
@@ -115,7 +113,7 @@ export default {
     // 1. 离开 home 时 保存滚动位置
     this.saveY = this.$refs.scroll.getScrollY()  
     // 2. 取消全局事件的监听 (这里取消 在 home 页面的重刷新 函数)
-    this.$bus.$off('itemImgLoad', this.itemImgListener)
+    this.$bus.$off('itemImgLoad', this.itemImgListener)   // 参数（取消的事件，mounted中的重刷新函数）
   },
   methods: {
     // 监听点击 TabControl 事件方法 获取当前的类型
@@ -142,8 +140,7 @@ export default {
 
     // 监听滚动位置
     contentScroll(position) {
-      // 1. 判断是否需要显示 BackTop按钮
-      this.isShowBackTop = -position.y > 1000;
+      this.listenShowBackTop(position);     // 调用 mixin 的函数来判断是否显示 BackTop 按钮
       // 2. 决定 tabControl是否吸顶 (position：fixed)
       this.isTabFixed = -position.y > this.tabOffSetTop;
     },

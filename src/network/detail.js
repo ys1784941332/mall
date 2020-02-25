@@ -26,7 +26,8 @@ export function getRecommend() {
 
 
 // 把多个从服务器返回的数据封装到 一个类中，用类创建对象，传到所需数据的组件中
-export class Goods {                // 商品基本信息
+// 商品基本信息
+export class Goods {                
   constructor(itemInfo, columns, services) {
     this.title = itemInfo.title
     this.desc = itemInfo.desc
