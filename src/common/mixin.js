@@ -1,3 +1,4 @@
+import {POP, NEW, SELL} from "./const";
 import {debounce} from './utils';
 import BackTop from "components/content/backTop/BackTop";
 
@@ -34,6 +35,31 @@ export const backTopMixin = {
     // 判断是否需要显示 BackTop按钮
     listenShowBackTop(position) {             // 必须在 监听滚动函数 里面调用它
       this.isShowBackTop = -position.y > 1000;
+    }
+  }
+}
+
+
+export const tabControlMixin = {
+  data: function () {
+    return {
+      currentType: POP
+    }
+  },
+  methods: {
+    tabClick(index) {
+      switch (index) {
+        case 0:
+          this.currentType = POP
+          break
+        case 1:
+          this.currentType = NEW
+          break
+        case 2:
+          this.currentType = SELL
+          break
+      }
+      console.log(this.currentType);
     }
   }
 }

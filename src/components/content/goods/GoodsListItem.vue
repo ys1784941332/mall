@@ -23,7 +23,7 @@ export default {
   computed: {
     showImage() {
       // 在详情页中使用 GoodsList 时 无 goodsItem.show.img 属性，只有 goodsItem.image 来获取图片
-      return this.goodsItem.image || this.goodsItem.show.img
+      return this.goodsItem.image || this.goodsItem.show.img || this.goodsItem.img
     }
   },
   methods: {
