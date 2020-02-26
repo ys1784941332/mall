@@ -66,6 +66,7 @@
     methods: {
 		  _getCategory() {
 		    getCategory().then(res => {
+          
 		      // 1.获取分类数据
 		      this.categories = res.data.category.list
           // 2.初始化每个类别的子数据
@@ -99,6 +100,7 @@
         const miniWallkey = this.categories[this.currentIndex].miniWallkey;
         // 2.发送请求,传入miniWallkey和type
 		    getCategoryDetail(miniWallkey, type).then(res => {
+          
 		      // 3.将获取的数据保存下来
 		      this.categoryData[this.currentIndex].categoryDetail[type] = res
           this.categoryData = {...this.categoryData}

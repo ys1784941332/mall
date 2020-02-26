@@ -59,7 +59,6 @@ export const tabControlMixin = {
           this.currentType = SELL
           break
       }
-      console.log(this.currentType);
     }
   }
 }
