@@ -7,6 +7,7 @@ export default  {
     payload.count++               // 老商品数量 + 1
   },
   [ADD_TO_CART](state, payload) {     // 新商品添加到购物车
+    payload.checked = true         // 给新添加的商品 添加个属性， 默认为 true
     state.cartList.push(payload)
   }
 }

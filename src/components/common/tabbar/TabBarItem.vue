@@ -13,7 +13,7 @@ export default {
     path: String,
     activeColor: {
       type: String,
-      default: 'red'
+      default: 'deeppink'
     }
   },
   data() {

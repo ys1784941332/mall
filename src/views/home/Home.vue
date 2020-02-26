@@ -1,7 +1,7 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav">
-      <div slot="center">购物车</div>
+      <div slot="center">购物街</div>
     </nav-bar>
     <!-- 新加一个 tab-control , 监听滚动位置 再显示 -->
     <tab-control
